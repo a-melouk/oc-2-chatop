@@ -1,0 +1,161 @@
+swagger: "2.0"
+info:
+  title: "Chatop API Documentation"
+  description: "Authentication API endpoints for Chatop application"
+  version: "1.0.0"
+host: "localhost:8080"
+basePath: "/api"
+schemes:
+  - http
+  - https
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user
+      description: Create a new user account
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/RegisterRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User registered successfully
+          schema:
+            $ref: "#/definitions/TokenResponse"
+        "400":
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "409":
+          description: Email already exists
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and retrieve JWT token
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/LoginRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: "#/definitions/TokenResponse"
+        "401":
+          description: Authentication failed
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Retrieve authenticated user details
+      security:
+        - Bearer: []
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User details retrieved successfully
+          schema:
+            $ref: "#/definitions/UserDetails"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: "JWT token. Example: 'Bearer {token}'"
+
+definitions:
+  RegisterRequest:
+    type: object
+    required:
+      - name
+      - email
+      - password
+    properties:
+      name:
+        type: string
+        minLength: 2
+        maxLength: 50
+        example: "John Doe"
+      email:
+        type: string
+        format: email
+        example: "john@example.com"
+      password:
+        type: string
+        minLength: 6
+        example: "password123"
+
+  LoginRequest:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        format: email
+        example: "john@example.com"
+      password:
+        type: string
+        example: "password123"
+
+  TokenResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+  UserDetails:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      name:
+        type: string
+        example: "John Doe"
+      email:
+        type: string
+        example: "john@example.com"
+      created_at:
+        type: string
+        format: date-time
+        example: "2024-02-20T10:30:00Z"
+
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        example: "Invalid credentials"
+      status:
+        type: integer
+        example: 401

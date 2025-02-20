@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.openclassrooms.exceptions.EmailAlreadyExistsException;
 import com.openclassrooms.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +61,10 @@ public class UserService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 }
