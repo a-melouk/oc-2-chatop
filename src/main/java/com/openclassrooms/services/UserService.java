@@ -58,7 +58,7 @@ public class UserService {
         }
     }
 
-    public User saveEmployee(User user) {
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 }
