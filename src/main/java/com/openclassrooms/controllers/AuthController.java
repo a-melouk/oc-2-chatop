@@ -1,6 +1,6 @@
 package com.openclassrooms.controllers;
 
-import com.openclassrooms.dto.UserDetailsDTO;
+import com.openclassrooms.dto.authentication.UserDetails;
 import com.openclassrooms.models.User;
 import com.openclassrooms.services.JWTService;
 import com.openclassrooms.services.UserService;
@@ -22,8 +22,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDetailsDTO> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<UserDetails> getCurrentUser(Authentication authentication) {
         User user = userService.getUserByEmail(authentication.getName());
-        return ResponseEntity.ok(UserDetailsDTO.fromUser(user));
+        return ResponseEntity.ok(UserDetails.fromUser(user));
     }
 }

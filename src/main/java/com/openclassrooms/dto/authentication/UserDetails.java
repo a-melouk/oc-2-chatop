@@ -1,18 +1,18 @@
-package com.openclassrooms.dto;
+package com.openclassrooms.dto.authentication;
 
 import com.openclassrooms.models.User;
 import lombok.Data;
 
 @Data
-public class UserDetailsDTO {
+public class UserDetails {
     private Long id;
     private String name;
     private String email;
     private String created_at;
     private String updated_at;
 
-    public static UserDetailsDTO fromUser(User user) {
-        UserDetailsDTO dto = new UserDetailsDTO();
+    public static UserDetails fromUser(User user) {
+        UserDetails dto = new UserDetails();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());

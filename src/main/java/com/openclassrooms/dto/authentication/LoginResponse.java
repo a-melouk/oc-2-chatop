@@ -1,4 +1,4 @@
-package com.openclassrooms.dto;
+package com.openclassrooms.dto.authentication;
 
 import lombok.Data;
 

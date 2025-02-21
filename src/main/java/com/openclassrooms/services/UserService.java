@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.openclassrooms.dto.RegisterRequest;
+import com.openclassrooms.dto.authentication.RegisterRequest;
 import com.openclassrooms.models.User;
 import com.openclassrooms.repositories.UserRepository;
 

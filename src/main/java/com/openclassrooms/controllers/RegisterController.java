@@ -1,15 +1,15 @@
 package com.openclassrooms.controllers;
 
-import com.openclassrooms.dto.RegisterRequest;
+import com.openclassrooms.dto.authentication.RegisterRequest;
 import com.openclassrooms.exceptions.ApiException;
 import com.openclassrooms.models.User;
 import com.openclassrooms.services.JWTService;
 import com.openclassrooms.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +38,7 @@ public class RegisterController {
             User user = userService.registerUser(request);
 
             // Create authentication token
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
-                    null,
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-            );
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
 
             // Generate JWT token
             String token = jwtService.generateToken(authentication);
