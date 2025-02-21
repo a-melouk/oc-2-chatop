@@ -1,13 +1,12 @@
 swagger: "2.0"
 info:
   title: "Chatop API Documentation"
-  description: "Authentication API endpoints for Chatop application"
+  description: "API endpoints for Chatop rental application"
   version: "1.0.0"
-host: "localhost:8080"
+host: "localhost:3001"
 basePath: "/api"
 schemes:
   - http
-  - https
 
 paths:
   /auth/register:
@@ -31,10 +30,6 @@ paths:
             $ref: "#/definitions/TokenResponse"
         "400":
           description: Validation error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-        "409":
-          description: Email already exists
           schema:
             $ref: "#/definitions/ErrorResponse"
 
@@ -82,12 +77,173 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /rentals:
+    get:
+      tags:
+        - Rentals
+      summary: Get all rentals
+      description: Retrieve list of all rental properties
+      security:
+        - Bearer: []
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: List of rentals retrieved successfully
+          schema:
+            type: object
+            properties:
+              rentals:
+                type: array
+                items:
+                  $ref: "#/definitions/Rental"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - Rentals
+      summary: Create new rental
+      description: Create a new rental property listing
+      security:
+        - Bearer: []
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Rental created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Rental created !"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /rentals/{id}:
+    get:
+      tags:
+        - Rentals
+      summary: Get rental by ID
+      description: Retrieve details of a specific rental
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Rental details retrieved successfully
+          schema:
+            $ref: "#/definitions/Rental"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      tags:
+        - Rentals
+      summary: Update rental
+      description: Update an existing rental property
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Rental updated successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Rental updated !"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /user/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: Retrieve user details by ID
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: User details retrieved successfully
+          schema:
+            $ref: "#/definitions/UserDetails"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /messages:
+    post:
+      tags:
+        - Messages
+      summary: Send message
+      description: Send a message regarding a rental
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/MessageRequest"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Message sent successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Message send with success"
+        "400":
+          description: Validation error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
-    description: "JWT token. Example: 'Bearer {token}'"
+    description: "JWT token. Example: 'Bearer jwt'"
 
 definitions:
   RegisterRequest:
@@ -99,16 +255,13 @@ definitions:
     properties:
       name:
         type: string
-        minLength: 2
-        maxLength: 50
-        example: "John Doe"
+        example: "Test TEST"
       email:
         type: string
         format: email
-        example: "john@example.com"
+        example: "test@test.com"
       password:
         type: string
-        minLength: 6
         example: "password123"
 
   LoginRequest:
@@ -120,17 +273,17 @@ definitions:
       email:
         type: string
         format: email
-        example: "john@example.com"
+        example: "test@test.com"
       password:
         type: string
-        example: "password123"
+        example: "test!31"
 
   TokenResponse:
     type: object
     properties:
       token:
         type: string
-        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        example: "jwt"
 
   UserDetails:
     type: object
@@ -141,21 +294,74 @@ definitions:
         example: 1
       name:
         type: string
-        example: "John Doe"
+        example: "Test TEST"
       email:
         type: string
-        example: "john@example.com"
+        example: "test@test.com"
       created_at:
         type: string
-        format: date-time
-        example: "2024-02-20T10:30:00Z"
+        example: "2022/02/02"
+      updated_at:
+        type: string
+        example: "2022/08/02"
+
+  Rental:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      name:
+        type: string
+        example: "dream house"
+      surface:
+        type: integer
+        example: 24
+      price:
+        type: integer
+        example: 30
+      picture:
+        type: array
+        items:
+          type: string
+        example: ["https://blog.technavio.org/wp-content/uploads/2018/12/Online-House-Rental-Sites.jpg"]
+      description:
+        type: string
+        example: "Lorem ipsum dolor sit amet..."
+      owner_id:
+        type: integer
+        format: int64
+        example: 1
+      created_at:
+        type: string
+        example: "2012/12/02"
+      updated_at:
+        type: string
+        example: "2014/12/02"
+
+  MessageRequest:
+    type: object
+    required:
+      - user_id
+      - message
+      - rental_id
+    properties:
+      user_id:
+        type: integer
+        format: int64
+        example: 1
+      message:
+        type: string
+        example: "I'm interested in this property"
+      rental_id:
+        type: integer
+        format: int64
+        example: 1
 
   ErrorResponse:
     type: object
     properties:
-      error:
+      message:
         type: string
-        example: "Invalid credentials"
-      status:
-        type: integer
-        example: 401
+        example: "error"

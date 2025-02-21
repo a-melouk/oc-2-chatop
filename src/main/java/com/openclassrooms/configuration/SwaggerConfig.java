@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SwaggerConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger/**")
-                .addResourceLocations("classpath:/");
+        registry.addResourceHandler("/swagger/**").addResourceLocations("classpath:/");
     }
 }
