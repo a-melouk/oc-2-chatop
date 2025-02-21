@@ -1,9 +1,8 @@
 package com.openclassrooms.controllers;
 
-import com.openclassrooms.dto.LoginRequest;
-import com.openclassrooms.dto.LoginResponse;
+import com.openclassrooms.dto.authentication.LoginRequest;
+import com.openclassrooms.dto.authentication.LoginResponse;
 import com.openclassrooms.services.JWTService;
-import com.openclassrooms.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,12 +25,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         String token = jwtService.generateToken(authentication);
         return ResponseEntity.ok(new LoginResponse(token));
