@@ -2,6 +2,7 @@ package com.openclassrooms.controllers;
 
 import com.openclassrooms.dto.rentals.RentalDTO;
 import com.openclassrooms.dto.rentals.RentalResponse;
+import com.openclassrooms.models.Rental;
 import com.openclassrooms.services.RentalService;
 import com.openclassrooms.services.UserService;
 import com.openclassrooms.utils.FileUtil;
@@ -82,15 +83,25 @@ public class RentalController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Update an existing rental", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<RentalResponse> updateRental(@PathVariable Long id, @RequestParam("name") String name, @RequestParam("surface") BigDecimal surface, @RequestParam("price") BigDecimal price, @RequestParam("description") String description, @RequestParam(value = "picture", required = false) MultipartFile picture) {
-
+    public ResponseEntity<RentalResponse> updateRental(@PathVariable Long id,
+                                                       @RequestParam("name") String name,
+                                                       @RequestParam("surface") BigDecimal surface,
+                                                       @RequestParam("price") BigDecimal price,
+                                                       @RequestParam("description") String description,
+                                                       @RequestParam(value = "picture", required = false) MultipartFile picture) {
+        log.warning("Updating rental");
         try {
+            // First, get the existing rental to preserve data if needed
+            Rental existingRental = rentalService.getRental(id);
 
             RentalDTO rentalDTO = new RentalDTO();
             rentalDTO.setName(name);
             rentalDTO.setSurface(surface);
             rentalDTO.setPrice(price);
             rentalDTO.setDescription(description);
+
+            // Set the existing picture URL by default
+            rentalDTO.setPicture(existingRental.getPicture());
 
             // Process the picture file if provided
             if (picture != null && !picture.isEmpty()) {
@@ -99,16 +110,21 @@ public class RentalController {
                     String pictureUrl = "http://127.0.0.1:5500/" + fileName;
                     rentalDTO.setPicture(pictureUrl);
                 } else {
-                    log.warning("No valid picture file was processed during update");
-                    // Don't return error for image processing failure during update
+                    log.warning("No valid picture file was processed during update, keeping existing picture");
                 }
             }
 
             rentalService.updateRental(id, rentalDTO);
             return ResponseEntity.ok(RentalResponse.success("updated"));
+        } catch (SecurityException e) {
+            log.warning("Authorization error: " + e.getMessage());
+            // Return a specific authorization error with the actual message
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new RentalResponse(e.getMessage()));
         } catch (Exception e) {
-            // Return a generic error response using the same format as success
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RentalResponse.success("error"));
+            log.warning("Error updating rental: " + e.getMessage());
+            // Return an error response with the correct error method
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RentalResponse.error("updating"));
         }
     }
 
