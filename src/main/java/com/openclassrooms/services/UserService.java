@@ -1,9 +1,8 @@
 package com.openclassrooms.services;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-
 import com.openclassrooms.exceptions.EmailAlreadyExistsException;
+import com.openclassrooms.exceptions.ResourceNotFoundException;
 import com.openclassrooms.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,10 +24,6 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    public Optional<User> getUser(final Long id) {
-        return userRepository.findById(id);
-    }
 
     public boolean emailExists(String email) {
         return userRepository.findByEmail(email).isPresent();
@@ -59,12 +54,13 @@ public class UserService {
         }
     }
 
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
-
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
