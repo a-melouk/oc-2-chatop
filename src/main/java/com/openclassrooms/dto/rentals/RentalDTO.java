@@ -1,5 +1,6 @@
 package com.openclassrooms.dto.rentals;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.openclassrooms.models.Rental;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,7 @@ public class RentalDTO {
     @NotEmpty(message = "Description is required")
     private String description;
 
+    @JsonProperty("owner_id")
     private Long ownerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
