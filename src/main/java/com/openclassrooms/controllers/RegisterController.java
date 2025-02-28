@@ -5,7 +5,9 @@ import com.openclassrooms.exceptions.ApiException;
 import com.openclassrooms.models.User;
 import com.openclassrooms.services.JWTService;
 import com.openclassrooms.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,8 +23,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@Log
 public class RegisterController {
-
     private final UserService userService;
     private final JWTService jwtService;
 
@@ -32,6 +34,7 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register new user", description = "Creates a new user account and returns JWT token")
     public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
         try {
             // Register the user
