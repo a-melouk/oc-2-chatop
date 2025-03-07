@@ -21,7 +21,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get user by ID", description = "Retrieves user details by their ID", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get user by ID",
+            description = "Retrieves user details by their ID",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<UserDetails> getUserById(@PathVariable Long id) {
         User user = userService.getUser(id);
         return ResponseEntity.ok(UserDetails.fromUser(user));

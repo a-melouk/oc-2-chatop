@@ -27,7 +27,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    @Operation(summary = "Get current user details", description = "Retrieves details of the currently authenticated user", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get current user details",
+            description = "Retrieves details of the currently authenticated user",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<UserDetails> getCurrentUser(Authentication authentication) {
         User user = userService.getUserByEmail(authentication.getName());
         return ResponseEntity.ok(UserDetails.fromUser(user));

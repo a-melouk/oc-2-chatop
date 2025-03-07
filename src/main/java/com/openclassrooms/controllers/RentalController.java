@@ -54,7 +54,12 @@ public class RentalController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Create a new rental", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<RentalResponse> createRental(@RequestParam("name") String name, @RequestParam("surface") BigDecimal surface, @RequestParam("price") BigDecimal price, @RequestParam("description") String description, @RequestParam("picture") MultipartFile picture) {
+    public ResponseEntity<RentalResponse> createRental(
+            @RequestParam("name") String name,
+            @RequestParam("surface") BigDecimal surface,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("description") String description,
+            @RequestParam("picture") MultipartFile picture) {
 
         try {
             RentalDTO rentalDTO = new RentalDTO();

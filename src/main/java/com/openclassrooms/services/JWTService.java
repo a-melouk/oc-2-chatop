@@ -1,6 +1,5 @@
 package com.openclassrooms.services;
 
-import com.nimbusds.jwt.JWTClaimsSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;

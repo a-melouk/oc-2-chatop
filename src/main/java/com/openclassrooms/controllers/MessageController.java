@@ -26,7 +26,9 @@ public class MessageController {
     }
 
     @PostMapping
-    @Operation(summary = "Create new message", description = "Creates a new message in the system", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create new message",
+            description = "Creates a new message in the system",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Map<String, String>> createMessage(@Valid @RequestBody MessageDTO messageDTO) {
         messageService.createMessage(messageDTO);
 
